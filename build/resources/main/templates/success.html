@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Success</title>
+</head>
+<body>
+
+<h2>Success ✅</h2>
+
+<p>
+    Role granted
+    <span th:if="${grantedUser != null}">
+        to <strong th:text="${grantedUser}">someone</strong>
+    </span>
+</p>
+
+<a th:href="@{/templates/admin}">Back to admin</a>
+
+</body>
+</html>

@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Admin</title>
+</head>
+<body>
+
+<h2>Hello <span th:text="${adminName}">Admin</span></h2>
+
+<h3>Grant the role Betreuer</h3>
+
+<form th:action="@{/templates/admin}" method="post">
+    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+
+    <label for="githubID">GitHub ID:</label>
+    <input id="githubID" type="number" name="githubID" placeholder="12345678"/>
+
+    <div style="color:red" th:if="${errorMessage}" th:text="${errorMessage}"></div>
+
+    <button type="submit">Grant role</button>
+</form>
+
+</body>
+</html>

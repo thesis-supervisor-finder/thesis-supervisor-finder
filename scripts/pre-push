@@ -1,0 +1,24 @@
+#!/bin/bash
+
+YELLOW='\033[0;33m'
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+NC='\033[0m'
+
+echo -e "${YELLOW}🚀 [Pre-Push] Führe vollen System-Check aus (Tests, Style, Bugs, Coverage)...${NC}"
+
+# Wir führen 'clean' und 'check' aus.
+# 'clean' ist wichtig, um sicherzustellen, dass keine alten Artefakte das Ergebnis verfälschen.
+./gradlew clean check
+
+EXIT_CODE=$?
+
+if [ $EXIT_CODE -ne 0 ]; then
+    echo -e "${RED}❌ FEHLER: Der Build ist fehlgeschlagen!${NC}"
+    echo -e "${RED}Mögliche Gründe: Tests fehlgeschlagen, Checkstyle-Verstöße, SpotBugs-Warnungen oder Coverage unter 70%.${NC}"
+    echo -e "Bitte prüfe den Output oben und repariere den Code vor dem Push."
+    exit 1
+fi
+
+echo -e "${GREEN}✅ Alles sauber (Coverage > 70%)! Code wird hochgeladen.${NC}"
+exit 0
