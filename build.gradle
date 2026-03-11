@@ -1,0 +1,120 @@
+plugins {
+    id 'java'
+    id 'org.springframework.boot' version '3.2.2'
+    id 'io.spring.dependency-management' version '1.1.4'
+    id 'checkstyle'
+    id 'jacoco'
+    id 'com.github.spotbugs' version '6.0.6'
+}
+
+group = 'de.hhu.propra'
+version = '0.0.1-SNAPSHOT'
+
+java {
+    sourceCompatibility = '21'
+}
+
+repositories {
+    mavenCentral()
+}
+
+ext {
+    archUnitVersion = '1.3.0'
+}
+
+dependencies {
+    // --- Spring Boot Core ---
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
+    implementation 'org.springframework.boot:spring-boot-starter-validation'
+    //implementation 'org.flywaydb:flyway-core:11.15.0'
+
+    // --- Security (GitHub OAuth) ---
+    implementation 'org.springframework.boot:spring-boot-starter-security'
+    implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
+
+    // --- Database ---
+    //implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    runtimeOnly 'com.h2database:h2'
+    implementation 'org.springframework.boot:spring-boot-starter-data-jdbc'
+    runtimeOnly 'org.postgresql:postgresql'
+    // --- Markdown & Sanitizing ---
+    // Zum Rendern von Markdown zu HTML
+    implementation 'org.commonmark:commonmark:0.21.0'
+    implementation 'com.googlecode.owasp-java-html-sanitizer:owasp-java-html-sanitizer:20220608.1'
+
+    // --- Testing ---
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testImplementation 'org.springframework.security:spring-security-test'
+    compileOnly "com.github.spotbugs:spotbugs-annotations:4.8.6"
+    testCompileOnly "com.github.spotbugs:spotbugs-annotations:4.8.6"
+    //tasks.named("spotbugsMain") { enabled = false }
+    //tasks.named("spotbugsTest") { enabled = false }
+    compileOnly "com.github.spotbugs:spotbugs-annotations:4.8.+"
+    // --- Architecture Testing ---
+    testImplementation "com.tngtech.archunit:archunit-junit5:$archUnitVersion"
+}
+
+test {
+    useJUnitPlatform()
+    finalizedBy jacocoTestReport
+}
+
+def jacocoExcludes = [
+        '**/ThesisApplication*',   // Die Main-Klasse hat kaum Logik
+        '**/config/**',            // Spring-Konfigurationen (schwer zu testen)
+        '**/dto/**',               // Reine Datencontainer (Getter/Setter testen ist sinnlos)
+        '**/exception/**',         // Eigene Exceptions
+        '**/model/Q*',             // Falls später QueryDSL generierte Klassen kommen
+        '**/adapter/web/**'        // Optional: Wenn du Controller nur per Integrationstest abdeckst
+]
+
+
+jacocoTestReport {
+    dependsOn test
+    reports {
+        xml.required = true
+        html.required = true
+    }
+    afterEvaluate {
+        classDirectories.setFrom(files(classDirectories.files.collect {
+            fileTree(dir: it, exclude: jacocoExcludes)
+        }))
+    }
+}
+
+jacocoTestCoverageVerification {
+    dependsOn jacocoTestReport
+
+    violationRules {
+        rule {
+            element = 'BUNDLE'
+
+            limit {
+                counter = 'INSTRUCTION'
+                value = 'COVEREDRATIO'
+                minimum = 0.00
+            }
+        }
+    }
+
+    // Auch hier die Excludes anwenden, sonst scheitert der Check an Config-Klassen
+    afterEvaluate {
+        classDirectories.setFrom(files(classDirectories.files.collect {
+            fileTree(dir: it, exclude: jacocoExcludes)
+        }))
+    }
+}
+
+check.dependsOn jacocoTestCoverageVerification
+
+// Checkstyle Config (Google Style)
+checkstyle {
+    toolVersion = '13.2.0'
+    configFile = file("config/checkstyle/checkstyle.xml")
+}
+
+spotbugs {
+    ignoreFailures = false
+}
+

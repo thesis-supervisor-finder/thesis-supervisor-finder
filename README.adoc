@@ -1,0 +1,58 @@
+# Thesis Supervisor Finder
+
+A web application that helps computer science students find supervisors and topics for their bachelor thesis.
+
+The platform allows students to browse supervisors, explore thesis topics, and receive recommendations based on their interests and completed courses.
+
+## Tech Stack
+
+Backend
+- Java
+- Spring Boot
+- Spring Security
+- REST API
+
+Database
+- PostgreSQL
+- JPA / Hibernate
+
+Authentication
+- GitHub OAuth
+
+Other Tools
+- Docker
+- Gradle
+- JUnit
+- Mockito
+
+## Features
+
+- Supervisor profiles with expertise tags
+- Thesis topic management
+- Student–supervisor matching system
+- Markdown rendering for topic descriptions
+- Role-based access control (Admin / Supervisor / Student)
+
+## Architecture
+
+The application follows an **Onion Architecture** to separate business logic from infrastructure.
+
+Layers:
+
+- Domain Layer
+- Application Layer
+- Infrastructure Layer
+- Web Layer
+
+
+## Project Context
+
+This project was developed as part of the **Programmierpraktikum 2** course at Heinrich-Heine-Universität Düsseldorf.
+
+Team size: 2 developers.
+
+## Authors
+Mouhib Kaabchi 
+Computer Science Student – HHU Düsseldorf
+Firas Tounsi  
+Computer Science Student – HHU Düsseldorf
