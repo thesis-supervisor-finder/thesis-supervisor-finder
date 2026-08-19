@@ -153,4 +153,4 @@ This is a portfolio and university project, not a production-ready service. Usef
 ## Authors
 
 - [Firas Tounsi](https://github.com/firastounsi-ui)
-- Mouhib Kaabchi
+- [Mouhib Kaabchi](https://github.com/mouhibkaabachi)
